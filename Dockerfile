@@ -7,7 +7,8 @@ ENV PATH /home/fluent/.gem/ruby/2.3.0/bin:$PATH
 
 USER root
 RUN apk --no-cache --update add sudo build-base ruby-dev && \
-    # sudo -u fluent gem install --no-document fluent-plugin-kubernetes_metadata_filter -v 0.25.3 && \
+    sudo -u fluent gem install --no-document fluent-plugin-record-reformer && \
+    sudo -u fluent gem install --no-document fluent-plugin-kubernetes_metadata_filter -v 0.25.3 && \
     sudo -u fluent gem install --no-document fluent-plugin-remote_syslog && \
     rm -rf /home/fluent/.gem/ruby/2.3.0/cache/*.gem && sudo -u fluent gem sources -c && \
     apk del sudo build-base ruby-dev && rm -rf /var/cache/apk/*
