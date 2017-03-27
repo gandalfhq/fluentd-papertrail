@@ -17,6 +17,8 @@ spec:
             memory: 200Mi
         imagePullPolicy: Always
         name: papertrailer
+        # securityContext:
+        #   privileged: true
         volumeMounts:
           - name: config
             mountPath: /fluentd/etc
@@ -26,7 +28,7 @@ spec:
             mountPath: /var/log/containers
             readOnly: true
           - name: varlibdockercontainer
-            mountPath: /var/lib/docker/container
+            mountPath: /var/lib/docker/containers
             readOnly: true
       volumes:
         - name: config
@@ -43,4 +45,4 @@ spec:
             path: /var/log/containers
         - name: varlibdockercontainer
           hostPath:
-            path: /var/lib/docker/container
+            path: /var/lib/docker/containers

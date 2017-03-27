@@ -21,10 +21,11 @@ data:
       format json
       time_key time
       read_from_head true
-      path /var/log/containers/*-json.log
+      path /var/log/containers/*.log
       pos_file /var/log/fluentd-docker.pos
       time_format %Y-%m-%dT%H:%M:%S
       tag reform.*
+      path_key tailed_path
     </source>
 
     <match reform.**>
@@ -42,7 +43,7 @@ data:
       type remote_syslog
       host logs5.papertrailapp.com
       port 17116
-      tag fluentd
+      # tag fluentd
       severity debug
       flush_interval 5s
     </match>
