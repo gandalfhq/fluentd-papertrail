@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  namespace: default
+  name: papertrailer
+spec:
+  template:
+    metadata:
+      labels:
+        app: papertrail
+      name: papertrailer
+    spec:
+      containers:
+      - image: arobson/fluentd-papertrail
+        resources:
+          limits:
+            memory: 200Mi
+        imagePullPolicy: Always
+        name: papertrailer
+        volumeMounts:
+          - name: config
+            mountPath: /fluentd/etc
+          - name: varlog
+            mountPath: /var/log
+          - name: varlogcontainers
+            mountPath: /var/log/containers
+            readOnly: true
+          - name: varlibdockercontainer
+            mountPath: /var/lib/docker/container
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: papertrailer-config
+            items:
+              - key: fluent.conf
+                path: fluent.conf
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+        - name: varlibdockercontainer
+          hostPath:
+            path: /var/lib/docker/container

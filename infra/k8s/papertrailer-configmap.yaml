@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: papertrailer-config
+  namespace: default
+data:
+  fluent.conf: |
+    #<source>
+    #  type tail
+    #  format json
+    #  time_key time
+    #  read_from_head true
+    #  path /var/lib/docker/containers/*/*-json.log
+    #  pos_file /var/log/fluentd-docker.pos
+    #  time_format %Y-%m-%dT%H:%M:%S
+    #  tag docker.*
+    #</source>
+
+    <source>
+      type tail
+      format json
+      time_key time
+      read_from_head true
+      path /var/log/containers/*-json.log
+      pos_file /var/log/fluentd-docker.pos
+      time_format %Y-%m-%dT%H:%M:%S
+      tag reform.*
+    </source>
+
+    <match reform.**>
+      type record_reformer
+      enable_ruby true
+      tag k8s.${tag_suffix[4].split('-')[0..-2].join('-')}
+    </match>
+
+    <match fluent.**>
+      type null
+    </match>
+
+    #<match docker.var.lib.docker.containers.*.*.log>
+    <match k8s.**>
+      type remote_syslog
+      host logs5.papertrailapp.com
+      port 17116
+      tag fluentd
+      severity debug
+      flush_interval 5s
+    </match>
